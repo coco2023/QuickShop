@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.http.ResponseEntity.ok;
-
 @RestController
 @RequestMapping("/auth")
 public class AuthController {

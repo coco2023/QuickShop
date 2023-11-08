@@ -14,17 +14,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
 
 public class JwtTokenFilter extends GenericFilterBean {
-
-    // Inject values from application properties or define them here
-    @Value("${security.jwt.token.secret-key:secret}")
-    private String secretKey;
-
-    @Value("${security.jwt.token.expire-length:3600000}") // 1h by default
-    private long validityInMilliseconds;
 
     private JwtTokenProvider jwtTokenProvider;
 
@@ -43,19 +34,4 @@ public class JwtTokenFilter extends GenericFilterBean {
         filterChain.doFilter(req, res);
     }
 
-//    public String createToken(String username, List<String> roles) {
-//        Claims claims = Jwts.claims().setSubject(username);
-//        claims.put("roles", roles);
-//
-//        Date now = new Date();
-//        Date validity = new Date(now.getTime() + validityInMilliseconds);
-//
-//        return Jwts.builder()
-//                .setClaims(claims)
-//                .setIssuedAt(now)
-//                .setExpiration(validity)
-//                .signWith(SignatureAlgorithm.HS256, secretKey)
-//                .compact();
-//    }
-//
 }

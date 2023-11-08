@@ -24,7 +24,6 @@ public class JwtTokenProvider {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    // Inject values from application properties or define them here
     @Value("${security.jwt.token.secret-key:secret}")
     private String secretKey;
 
