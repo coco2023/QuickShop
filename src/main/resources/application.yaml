@@ -44,3 +44,10 @@ logging:
         type:
           descriptor:
             sql: trace
+
+
+security:
+  jwt:
+    token:
+      secret-key: Base64EncodedSecretKeyHere
+      expire-length: 3600000 # 1 hour
