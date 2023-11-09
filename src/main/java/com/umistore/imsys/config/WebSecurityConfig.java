@@ -38,33 +38,35 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // Permit all users to access the home page and other static resources
-                .antMatchers("/", "/home", "/css/**", "/js/**", "/images/**").permitAll()
+//                .antMatchers("/home", "/css/**", "/js/**", "/images/**").permitAll()
                 .antMatchers(SecurityConstants.SWAGGER_WHITELIST).permitAll()
                 .antMatchers(SecurityConstants.H2_CONSOLE).permitAll()
 
                 // Allow everyone to access the login endpoint
-                .antMatchers("/auth/login").permitAll()
+                .antMatchers("/auth/login", "/auth/users/register").permitAll()
+
+                // Allow customer role to search for products and get all products
+                .antMatchers("/products/search", "/products/all").hasAnyRole("CUSTOMER", "MANAGER")
+
                 // Manager role can access any API under /api
                 .antMatchers("/**").hasRole("MANAGER")
 
-                // Allow customer role to search for products and get all products
-                .antMatchers("/products/search", "/products/all").hasRole("CUSTOMER")
                 .anyRequest().authenticated() // All other endpoints require authentication
                 .and()
                 .addFilterBefore(new JwtTokenFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class);
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                // In-memory authentication for demonstration purposes
-                .inMemoryAuthentication()
-                .withUser("customer").password(passwordEncoder().encode("password")).roles("CUSTOMER")
-                .and()
-                .withUser("manager").password(passwordEncoder().encode("password")).roles("MANAGER");
-    }
-
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth
+//                // In-memory authentication for demonstration purposes
+//                .inMemoryAuthentication()
+//                .withUser("customer").password(passwordEncoder().encode("password")).roles("CUSTOMER")
+//                .and()
+//                .withUser("manager").password(passwordEncoder().encode("password")).roles("MANAGER");
+//    }
+//
     @Bean
     public PasswordEncoder passwordEncoder() {
         // A secure password encoder is defined as a bean to be used across the application

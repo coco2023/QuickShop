@@ -1,12 +1,14 @@
 package com.umistore.imsys.security;
 
 import com.umistore.imsys.constant.SecurityConstants;
+import com.umistore.imsys.exception.JwtAuthenticationException;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -16,13 +18,17 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * JwtTokenProvider is only needed for creating tokens and not for loading user details
+ */
 @Component
 public class JwtTokenProvider {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+//    @Autowired
+//    private UserDetailsService userDetailsService;
 
     @Value("${security.jwt.token.secret-key:secret}")
     private String secretKey;
@@ -60,12 +66,22 @@ public class JwtTokenProvider {
         return SecurityConstants.TOKEN_PREFIX + token;
     }
 
-    public Authentication getAuthentication(String token) {
-        // Extract the user details and create an Authentication object
-        UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
+//    public Authentication getAuthentication(String token) {
+//        // Extract the user details and create an Authentication object
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
+//        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+//    }
 
+    public Authentication getAuthentication(String token) {
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        String username = claims.getSubject();
+        Collection<? extends GrantedAuthority> authorities =
+                ((List<?>) claims.get("auth")).stream()
+                        .map(authority -> new SimpleGrantedAuthority((String) authority))
+                        .collect(Collectors.toList());
+
+        return new UsernamePasswordAuthenticationToken(username, token, authorities);
+    }
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
@@ -87,10 +103,10 @@ public class JwtTokenProvider {
         }
     }
 
-    private class JwtAuthenticationException extends RuntimeException {
-        public JwtAuthenticationException(String e) {
-            super(e);
-        }
-    }
+//    private class JwtAuthenticationException extends RuntimeException {
+//        public JwtAuthenticationException(String e) {
+//            super(e);
+//        }
+//    }
 
 }

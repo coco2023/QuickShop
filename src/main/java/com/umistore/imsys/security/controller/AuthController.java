@@ -2,7 +2,8 @@ package com.umistore.imsys.security.controller;
 
 import com.umistore.imsys.security.JwtTokenProvider;
 import com.umistore.imsys.security.model.AuthRequest;
-import com.umistore.imsys.security.service.CustomUserDetailsService;
+//import com.umistore.imsys.security.service.CustomUserDetailsService;
+import com.umistore.imsys.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,8 +29,11 @@ public class AuthController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+//    @Autowired
+//    private CustomUserDetailsService customUserDetailsService;
+
     @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody AuthRequest data) {
@@ -37,7 +41,7 @@ public class AuthController {
             String username = data.getUsername();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, data.getPassword()));
             // load the user to get the roles for the token
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = userService.loadUserByUsername(username);
             String token = jwtTokenProvider.createToken(username, userDetails.getAuthorities());
 
             Map<Object, Object> model = new HashMap<>();
