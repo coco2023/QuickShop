@@ -1,6 +1,5 @@
 package com.umistore.imsys.security.controller;
 
-import com.umistore.imsys.security.entity.User;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

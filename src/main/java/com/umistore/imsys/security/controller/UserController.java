@@ -24,25 +24,22 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Object> registerUser(@RequestBody RegistrationRequestDTO registrationRequestDTO) {
 
-        RegistrationResponseDTO registeredUser = userService.registerNewUser(registrationRequestDTO);
-        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
-
-//        try {
-//            RegistrationResponseDTO registeredUser = userService.registerNewUser(registrationRequestDTO);
-//            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
-//        } catch (CustomDuplicateUsernameException e) {
-//            return ResponseEntity
-//                    .status(HttpStatus.BAD_REQUEST)
-//                    .body(Collections.singletonMap("message", e.getMessage()));
-//        } catch (CustomDuplicateEmailException e) {
-//            return ResponseEntity
-//                    .status(HttpStatus.BAD_REQUEST)
-//                    .body(Collections.singletonMap("message", e.getMessage()));
-//        } catch (Exception e) {
-//            // Generic exception handler for other unexpected exceptions
-//            return ResponseEntity
-//                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(Collections.singletonMap("message", "An error occurred during registration."));
-//        }
+        try {
+            RegistrationResponseDTO registeredUser = userService.registerNewUser(registrationRequestDTO);
+            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+        } catch (CustomDuplicateUsernameException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("message", e.getMessage()));
+        } catch (CustomDuplicateEmailException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("message", e.getMessage()));
+        } catch (Exception e) {
+            // Generic exception handler for other unexpected exceptions
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("message", "An error occurred during registration."));
+        }
     }
 }
