@@ -19,4 +19,7 @@ public interface PermissionRepository extends JpaRepository<Permission, Integer>
             "JOIN Role r ON rp.roleID = r.roleID " +
             "WHERE r.roleName IN :roleNames")
     List<String> findPermissionsByRoleNames(@Param("roleNames") List<String> roleNames);
+
+    @Query("SElECT p FROM Permission p WHERE LOWER(p.permissionName) LIKE LOWER(CONCAT('%', :name, '%') ) ")
+    List<Permission> searchByName(@Param("name") String name);
 }
