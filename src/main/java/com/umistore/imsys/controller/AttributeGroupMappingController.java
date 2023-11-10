@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/attributeGroupMappings")
+@RequestMapping("/api/attributeGroupMappings")
 @Api(value = "AttributeGroupMappingController", description = "Operations for AttributeGroupMapping")
 public class AttributeGroupMappingController {
 

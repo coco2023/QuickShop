@@ -19,7 +19,7 @@ public class MappingsController {
         this.handlerMapping = handlerMapping;
     }
 
-    @GetMapping("/mappings")
+    @GetMapping("/api/mappings")
     public Map<String, String> getMappings() {
         Map<String, String> mappings = new HashMap<>();
         this.handlerMapping.getHandlerMethods().forEach((key, value) -> mappings.put(key.toString(), value.toString()));

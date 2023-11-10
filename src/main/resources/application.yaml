@@ -1,8 +1,8 @@
 
 server:
   port: 9001
-  servlet:
-    contextPath: /api
+  error:
+    path: /error
 
 spring:
   datasource:
@@ -13,7 +13,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL57InnoDBDialect
@@ -44,6 +44,8 @@ logging:
         type:
           descriptor:
             sql: trace
+      springframework:
+        security: DEBUG
 
 
 security:

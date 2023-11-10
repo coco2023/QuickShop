@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/paymentTransactions")
+@RequestMapping("/api/paymentTransactions")
 @Api(value = "PaymentTransactionController", description = "Operations pertaining to payment transactions")
 public class PaymentTransactionController {
 

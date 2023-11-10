@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/productAttributes")
+@RequestMapping("/api/productAttributes")
 @Api(value = "ProductAttributeController", description = "Operations for productAttributes")
 public class ProductAttributeController {
 

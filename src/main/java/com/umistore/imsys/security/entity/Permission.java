@@ -23,6 +23,6 @@ public class Permission {
     private String permissionName;
 
     @Column(columnDefinition = "TEXT")
-    private String description;
+    private String description;  // e.g., READ_PRODUCTS, CREATE_ORDER
 
 }

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/attributes")
+@RequestMapping("/api/attributes")
 @Api(value = "AttributeController", description = "Operations for Attribute")
 public class AttributeController {
 

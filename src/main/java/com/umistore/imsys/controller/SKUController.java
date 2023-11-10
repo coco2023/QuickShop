@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/skus")
+@RequestMapping("/api/skus")
 @Api(value = "SKUController", description = "Operations for SKU")
 public class SKUController {
 

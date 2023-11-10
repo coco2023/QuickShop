@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reconciliation")
+@RequestMapping("/api/reconciliation")
 @Api(value = "ReconciliationController", description = "Operations for reconciliation")
 public class ReconciliationController {
 

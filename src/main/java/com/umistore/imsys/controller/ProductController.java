@@ -4,24 +4,29 @@ import com.umistore.imsys.entity.Product;
 import com.umistore.imsys.service.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/products")
 @Api(value = "ProductController", description = "Operations pertaining to products")
+@Log4j2
 public class ProductController {
 
     @Autowired
     private ProductService productService;
 
-    @PostMapping("/")
+    @PostMapping("/create")
     @ApiOperation(value = "create Product", notes = "create Product")
+    @PreAuthorize("hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        log.info("*** MANAGER createProduct!");
         Product savedProduct = productService.createProduct(product);
         return ResponseEntity.ok(savedProduct);
     }
@@ -49,7 +54,9 @@ public class ProductController {
 
     @GetMapping("/all")
     @ApiOperation(value = "get all Product", notes = "get all Product")
+    @PreAuthorize("hasAuthority('READ_PRODUCTS')")
     public ResponseEntity<List<Product>> getAllProducts() {
+        log.info("*** MANAGER or CUSTOMER createProduct!");
         List<Product> productList = productService.getAllProducts();
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }

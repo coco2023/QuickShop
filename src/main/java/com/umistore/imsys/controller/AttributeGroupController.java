@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/attributeGroups")
+@RequestMapping("/api/attributeGroups")
 @Api(value = "AttributeGroupController", description = "Operations for AttributeGroup")
 public class AttributeGroupController {
 

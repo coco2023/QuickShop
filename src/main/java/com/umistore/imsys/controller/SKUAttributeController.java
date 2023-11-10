@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/skuattributes")
+@RequestMapping("/api/skuattributes")
 @Api(value = "SKUAttributeController", description = "Operations for SKUAttribute")
 public class SKUAttributeController {
 

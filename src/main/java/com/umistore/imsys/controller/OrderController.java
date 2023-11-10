@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/api/orders")
 @Api(value = "OrderController", description = "Operations pertaining to orders")
 public class OrderController {
 

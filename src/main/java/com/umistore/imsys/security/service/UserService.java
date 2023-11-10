@@ -4,14 +4,12 @@ import com.umistore.imsys.constant.UserType;
 import com.umistore.imsys.exception.CustomDuplicateEmailException;
 import com.umistore.imsys.exception.CustomDuplicateUsernameException;
 import com.umistore.imsys.exception.CustomRoleNotFoundException;
+import com.umistore.imsys.exception.RoleNotFoundException;
 import com.umistore.imsys.security.dto.RegistrationRequestDTO;
 import com.umistore.imsys.security.dto.RegistrationResponseDTO;
-import com.umistore.imsys.security.entity.Role;
-import com.umistore.imsys.security.entity.User;
-import com.umistore.imsys.security.entity.UserRole;
-import com.umistore.imsys.security.respository.RoleRepository;
-import com.umistore.imsys.security.respository.UserRepository;
-import com.umistore.imsys.security.respository.UserRoleRepository;
+import com.umistore.imsys.security.entity.*;
+import com.umistore.imsys.security.respository.*;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Log4j2
 public class UserService implements UserDetailsService {
 
     @Autowired
@@ -36,6 +35,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRoleRepository userRoleRepository;
+
+    @Autowired
+    private PermissionRepository permissionRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -73,8 +75,8 @@ public class UserService implements UserDetailsService {
 
         // Assign a role to the new user
         Role role = roleRepository.findByRoleName(registrationRequestDTO.getRoleName())
-//                .orElseThrow(() -> new RoleNotFoundException("Role not found with name: " + registrationRequestDTO.getRoleName()));
-                .orElseGet(() -> createNewRole(registrationRequestDTO.getRoleName()));
+                .orElseThrow(() -> new RoleNotFoundException("Role not found with name: " + registrationRequestDTO.getRoleName()));
+//                .orElseGet(() -> createNewRole(registrationRequestDTO.getRoleName()));
 
         UserRole userRole = new UserRole();
         userRole.setUserID(newUser.getUserID());
@@ -100,27 +102,31 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Retrieve the User entity by username
+        // Retrieve the user and their roles
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        // Retrieve UserRole entities by userID
-        List<UserRole> userRoles = userRoleRepository.findByUserID(user.getUserID());
+        // Retrieve roles by the username
+        List<String> roleNames = roleRepository.findRoleNamesByUsername(username);
 
-        // Convert UserRole entities to GrantedAuthority objects
+        // Retrieve permissions by the roles
+        List<String> permissions = permissionRepository.findPermissionsByRoleNames(roleNames);
+
+        // Combine roles and permissions into authorities
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (UserRole userRole : userRoles) {
-            // Retrieve each Role entity by roleID
-            Role role = roleRepository.findByRoleID(userRole.getRoleID())
-                    .orElseThrow(() -> new IllegalStateException("Role not found with id: " + userRole.getRoleID()));
-
-            // Create a new GrantedAuthority with the roleName, prepended with "ROLE_"
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
+        for (String roleName : roleNames) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + roleName));
+        }
+        for (String permission : permissions) {
+            authorities.add(new SimpleGrantedAuthority(permission));
         }
 
-        UserDetails userDetails = buildUserDetails(user, authorities);
-
-        return userDetails;
+        // Return the user details including the authorities
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                authorities
+        );
     }
 
     private UserDetails buildUserDetails(User user, List<GrantedAuthority> authorities) {
