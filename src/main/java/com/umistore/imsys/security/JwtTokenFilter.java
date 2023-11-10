@@ -32,24 +32,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    // Define the paths that should not be intercepted by the filter
-    private static final String[] PUBLIC_URLS = {
-//            "/api/auth/login",
-//            "/api/auth/users/register"
-            // ... any other public paths
-    };
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-//        String path = request.getServletPath();
-//
-//        if (Arrays.asList(PUBLIC_URLS).contains(path)) {
-//            logger.info("Skipping authentication for public endpoint: " + path);
-//            chain.doFilter(request, response);
-//            return;
-//        }
+        String path = request.getServletPath();
 
         String token = resolveToken(request);
         try {

@@ -1,6 +1,7 @@
 ### Add new permissions to a role
 PATCH http://localhost:9001/api/admin/rolepermissions/assign/{{roleId}}/permissions
 Content-Type: application/json
+Authorization: Bearer {{your_access_token}}
 
 [
   8,
